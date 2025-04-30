@@ -1,4 +1,4 @@
-name: Deploy Flask App
+name: Deploy to EC2
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -17,11 +18,13 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Run Ansible Playbook
+      - name: Add SSH key
         run: |
-          ansible-playbook ansible/playbook.yml -i ansible/inventory.ini
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+      - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
-
-        - name: Run Ansible Playbook
-          run: ansible-playbook ansible/playbook.yml -i ansible/inventory.ini --private-key assessment.pem
+        run: |
+          ansible-playbook ansible/playbook.yml -i ansible/inventory.ini --private-key assessment.pem
