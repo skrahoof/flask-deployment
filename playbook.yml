@@ -1,0 +1,34 @@
+- name: Deploy Flask App with NGINX
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - python3-pip
+          - nginx
+        state: present
+        update_cache: yes
+
+    - name: Install Flask
+      pip:
+        name: flask
+
+    - name: Copy Flask app
+      copy:
+        src: ../app/
+        dest: /home/ubuntu/app/
+        mode: 0755
+
+    - name: Run Flask app
+      shell: nohup python3 /home/ubuntu/app/app.py &
+
+    - name: Copy NGINX config
+      copy:
+        src: ../nginx/default.conf
+        dest: /etc/nginx/sites-available/default
+
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
