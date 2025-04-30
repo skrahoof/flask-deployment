@@ -3,7 +3,7 @@
 This project demonstrates a simple Flask app deployed on an EC2 instance using:
 - GitHub Actions for CI/CD
 - Ansible for configuration management
-- NGINX as a reverse 
+- NGINX as a reverse proxy
 
 ## Project Structure
 
