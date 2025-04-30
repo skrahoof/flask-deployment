@@ -14,19 +14,34 @@
       pip:
         name: flask
 
+    - name: Create app directory
+      file:
+        path: /home/ubuntu/app
+        state: directory
+        mode: '0755'
+        owner: ubuntu
+
     - name: Copy Flask app
       copy:
-        src: ../app/
+        src: app/
         dest: /home/ubuntu/app/
-        mode: 0755
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
 
     - name: Run Flask app
-      shell: nohup python3 /home/ubuntu/app/app.py &
+      shell: nohup python3 /home/ubuntu/app/app.py > /home/ubuntu/app.log 2>&1 &
+      args:
+        chdir: /home/ubuntu/app
+        creates: /home/ubuntu/app.log
 
     - name: Copy NGINX config
       copy:
-        src: ../nginx/default.conf
+        src: nginx/default.conf
         dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: '0644'
 
     - name: Restart NGINX
       service:
