@@ -23,6 +23,13 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > assessment1.pem
           chmod 600 assessment1.pem
 
+      - name: Verify SSH key file (debug)
+        run: |
+          echo "Checking key format:"
+          file assessment1.pem
+          echo "First few lines of the key:"
+          head -n 5 assessment1.pem
+
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
